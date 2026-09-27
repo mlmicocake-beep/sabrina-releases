@@ -1,26 +1,42 @@
 # Sabrina — 發行與下載
 
-這個 repo **只放發行物**，沒有原始碼。
+本 repo **僅存放發行物與價目表**，不含產品原始碼。
 
-- 安裝檔在 [Releases](../../releases)
+- 安裝檔：[Releases](../../releases)
 
 ## 檔案
 
-每一版會有兩種安裝檔，各自配一份原廠簽章清單：
+每個版本以 `v<Portal 版本>-agent<Agent 版本>` 標記（例如 `v3.0.5-agent0.21.5.7`），
+包含下列檔案，每個檔案各附一份原廠簽章清單：
 
-| 檔案 | 裝在哪 |
+| 檔案 | 用途 |
 |---|---|
-| `Sabrina-Setup-<版本>.exe` | 使用者的電腦 |
-| `SabrinaPortalSetup-<版本>.exe` | 公司的伺服器（IT 負責） |
-| `*.exe.manifest.json` | 對應的簽章清單，與 exe 成對 |
+| `SabrinaPortalSetup-<版本>.exe` | 企業伺服器（由 IT 管理），**內含同版本 Agent**；首次安裝請使用此檔 |
+| `SabrinaPortalSetup-<版本>-portal-only.exe` | 僅升級 Portal，不含 Agent；不可用於全新安裝 |
+| `Sabrina-Setup-<版本>.exe` | 使用者電腦的 Agent 獨立安裝檔 |
+| `sabrina-source-<版本>.zip` | Agent 就地更新套件，由 Portal 派送 Agent 更新時使用，無須手動下載 |
+| `*.manifest.json` | 對應的簽章清單，與檔案成對 |
 
-## 為什麼要有簽章清單
+部分新功能須 Portal 與 Agent 同時更新至同一版本標記方可使用，
+例如 3.0.5／0.21.5.7 起的技能與外掛市集；舊版 Agent 仍可連線，沿用原有功能。
 
-Sabrina Portal 以系統權限執行，而「套用更新」做的事就是執行安裝檔。
-Portal 只安裝**原廠私鑰簽過、而且標明是 Sabrina 的**檔案：清單被改、exe 被換、或有人冒充下載來源，
-都會在安裝前就被擋下來。私鑰只存在原廠機器上，不在這個 repo 裡，也不在任何出貨物裡。
+## 價目表
 
-所以 **exe 與 `.manifest.json` 一定要成對上架**。少了清單，Portal 收不進去。
+`pricing/model-prices.json` 為主要模型的官方計費（每筆附官方來源與核對日期）。
+Portal 更新模型規格表時（自動同步或「立即更新」）一併讀取此檔，作為建議單價的來源。
+
+## 簽章清單的作用
+
+Sabrina Portal 以系統權限執行，而「套用更新」即執行上傳的安裝檔。
+Portal 僅安裝經**原廠私鑰簽署、且標明產品線為 Sabrina** 的檔案：清單遭竄改、exe 遭替換或下載來源遭冒充，
+均會在安裝前被阻擋。私鑰僅存放於原廠機器，不在本 repo，亦不包含於任何出貨物。
+
+因此 **每個檔案與其 `.manifest.json` 必須成對上架**。缺少清單時，Portal 將無法安裝該檔案。
+
+## IT 安裝說明
+
+此處下載的 Agent 安裝檔**未內建入口位址**，安裝時會詢問要連線的伺服器。
+自企業 Portal 下載頁取得的安裝檔已內建位址，無須手動輸入，請優先使用。
 
 ## 驗證下載的檔案
 
@@ -28,4 +44,4 @@ Portal 只安裝**原廠私鑰簽過、而且標明是 Sabrina 的**檔案：清
 certutil -hashfile Sabrina-Setup-<版本>.exe SHA256
 ```
 
-算出來的值應與 `.manifest.json` 裡的 `sha256` 一致。
+計算結果應與 `.manifest.json` 中的 `sha256` 一致。
